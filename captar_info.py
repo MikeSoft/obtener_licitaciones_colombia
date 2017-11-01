@@ -168,6 +168,8 @@ def item2db(item, categoria, subcategoria):
 		entidad = descripcion[8:pos_end_entidad]
 		
 		municipio = get_municipio(entidad)
+		if type(municipio) is not str:
+			return
 		entidad = get_entidad(entidad, departamento, municipio)
 
 		
