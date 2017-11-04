@@ -18,7 +18,7 @@ c.execute(
     "CREATE TABLE IF NOT EXISTS licitaciones (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,"
     "departamento TEXT NOT NULL ,municipio TEXT NOT NULL,"
     "titulo TEXT NOT NULL ,descripcion TEXT NOT NULL ,link TEXT NOT NULL ,author TEXT NOT NULL ,"
-    " entidad TEXT NULL,precio_estimado INTEGER NULL,fecha DATE NOT NULL,categoria TEXT NOT NULL,subcategoria TEXT NOT NULL,UNIQUE(link) );"
+    " entidad TEXT NULL,precio_estimado INTEGER NULL,fecha DATE NOT NULL,categoria TEXT NOT NULL,subcategoria TEXT NOT NULL,descripcion_filtrado TEXT,UNIQUE(link) );"
 )
 
 c.execute("CREATE TABLE IF NOT EXISTS errores (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,tipo TEXT NOT NULL ,descripcion TEXT NOT NULL ,info TEXT NOT NULL );")
@@ -36,7 +36,8 @@ CREATE TABLE licitaciones (
 	entidad TEXT NULL ,
 	precio_estimado INTEGER NULL ,
 	categoria TEXT NOT NULL,
-	subcategoria TEXT NOT NULL
+	subcategoria TEXT NOT NULL,
+	descripcion_filtrado TEXT,
 	UNIQUE(link)
 );
 
@@ -180,14 +181,20 @@ def item2db(item, categoria, subcategoria):
 		precio_estimado = int(precio_estimado.replace(",",""))
 
 		titulo = unidecode.unidecode(titulo)
-		descripcion = unidecode.unidecode(descripcion)
+		
 		municipio = unidecode.unidecode(municipio)
 		
 		
-		elementos_sql = (titulo, descripcion, link, author, departamento, municipio, entidad, precio_estimado,today,categoria,subcategoria)
+		descripcion = unidecode.unidecode(descripcion)
+		
+		BR = descripcion.index("<br/>")+5
+		descripcion_filtrado =  descripcion[BR:]
+		descripcion_filtrado = descripcion_filtrado[:descripcion_filtrado.index("<br />")]
+		
+		elementos_sql = (titulo, descripcion, link, author, departamento, municipio, entidad, precio_estimado,today,categoria,subcategoria,descripcion_filtrado)
 		
 		
-		sql = 'INSERT INTO licitaciones(titulo,descripcion,link,author,departamento,municipio,entidad,precio_estimado,fecha,categoria,subcategoria) values(?,?,?,?,?,?,?,?,?,?,?)'
+		sql = 'INSERT INTO licitaciones(titulo,descripcion,link,author,departamento,municipio,entidad,precio_estimado,fecha,categoria,subcategoria,descripcion_filtrado) values(?,?,?,?,?,?,?,?,?,?,?,?)'
 		c.execute(sql,elementos_sql)
 		conn.commit()
 		global contador
