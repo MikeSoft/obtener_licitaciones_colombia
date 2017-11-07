@@ -190,6 +190,8 @@ def item2db(item, categoria, subcategoria):
 		BR = descripcion.index("<br/>")+5
 		descripcion_filtrado =  descripcion[BR:]
 		descripcion_filtrado = descripcion_filtrado[:descripcion_filtrado.index("<br />")]
+		descripcion_filtrado = descripcion_filtrado.replace(")"," ")
+		descripcion_filtrado = descripcion_filtrado.replace("("," ")
 		
 		elementos_sql = (titulo, descripcion, link, author, departamento, municipio, entidad, precio_estimado,today,categoria,subcategoria,descripcion_filtrado)
 		
