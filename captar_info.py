@@ -11,6 +11,11 @@ sys.setdefaultencoding('utf-8')
 from xml.dom.minidom import parseString
 from ciudad import get_municipio
 
+
+import urllib3
+
+urllib3.disable_warnings()
+
 conn = sqlite3.connect('database.db')
 conn.text_factory = str
 c = conn.cursor()
@@ -214,13 +219,14 @@ def item2db(item, categoria, subcategoria):
 
 def makepeticion(elemento):
     try:
-        R = requests.get(elemento["url"])
+        R = requests.get( elemento["url"], verify=False )
         XML = parseString(R.content).documentElement
 
         for item in XML.getElementsByTagName("item"):
             item2db(item, elemento["cat"],elemento["subcat"])
 
     except requests.exceptions.RequestException as e:
+        print e
         print "Error con la conexion a internet"
         sys.exit(1)
 
